@@ -1,7 +1,9 @@
 package guru.springframework.bootstrap;
 
+import guru.springframework.domain.Customer;
 import guru.springframework.domain.Product;
 import guru.springframework.services.ProductService;
+import guru.springframework.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -16,16 +18,22 @@ import java.math.BigDecimal;
 public class SpringJPABootstrap implements ApplicationListener<ContextRefreshedEvent>{
 
     private ProductService productService;
+    private CustomerService customerService;
 
     @Autowired
     public void setProductService(ProductService productService) {
         this.productService = productService;
     }
 
+    @Autowired
+    public void setCustomerService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         loadProducts();
-
+        loadCustomers();
     }
 
     public void loadProducts(){
@@ -59,6 +67,24 @@ public class SpringJPABootstrap implements ApplicationListener<ContextRefreshedE
         product5.setPrice(new BigDecimal("25.99"));
         product5.setImageUrl("http://example.com/product5");
         productService.saveOrUpdate(product5);
+
+    }
+
+    public void loadCustomers(){
+
+        for (int i=1;i<20;i++) {
+            Customer customer1 = new Customer();
+
+            customer1.setFirstName("First " + i);
+            customer1.setLastName("Last " + i);
+            customer1.setAddressLine1(i+" Main St");
+            customer1.setCity("City "+ i);
+            customer1.setState("State " + i);
+            customer1.setZipCode("zipcode" + i);
+            customer1.setEmail("First" + i +"@Last" + i+ ".com");
+            customer1.setPhoneNumber("phone" + i);
+            customerService.saveOrUpdate(customer1);
+        }
 
     }
 }
